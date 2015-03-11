@@ -30,7 +30,8 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 app.use(cookieParser());
 app.use(session({
-    name: 'dj'
+    name: 'dj',
+    secret: 'dj'
         // store: new MongoStore({
         //     db: config.db_name
         // }),
@@ -84,13 +85,15 @@ app.post("/message", function (req, res) {
 
 io.on('connection', function (socket) {
     socket.on("newUser", function (data) {
-        clients.push({
-            id: data.id,
-            name: data.name
-        });
-        io.sockets.emit("newConnection", {
-            clients: clients
-        });
+        if (clients.length < 2) {
+            clients.push({
+                id: data.id,
+                name: data.name
+            });
+            io.sockets.emit("newConnection", {
+                clients: clients
+            });
+        }
     });
 
     socket.on("disconnect", function () {

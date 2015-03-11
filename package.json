@@ -27,6 +27,7 @@
         "serve-favicon": "latest",
         "validator": "latest",
         "xss": "latest",
-        "socket.io": "latest"
+        "socket.io": "latest",
+        "morgan": "latest"
     }
 }
