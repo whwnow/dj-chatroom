@@ -1,0 +1,21 @@
+{
+    "name": "box-plan",
+    "version": "0.1.0",
+    "homepage": "localhost",
+    "authors": [
+        "whwnow <whwnow@gmail.com>"
+    ],
+    "description": "管理彩票投资计划",
+    "license": "MIT",
+    "private": true,
+    "ignore": [
+        "**/.*",
+        "node_modules"
+    ],
+    "dependencies": {
+        "validator-js": "latest",
+        "jquery": "latest",
+        "vue": "latest",
+        "bootstrap": "latest"
+    }
+}

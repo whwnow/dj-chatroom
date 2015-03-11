@@ -1,0 +1,32 @@
+{
+    "name": "box-lottery",
+    "version": "0.0.1",
+    "description": "方块彩票",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/greypants/gulp-starter.git"
+    },
+    "scripts": {
+        "start": "node app.js"
+    },
+    "browserify": {
+        "transform": [
+            "brfs"
+        ]
+    },
+    "dependencies": {
+        "body-parser": "latest",
+        "cookie-parser": "latest",
+        "ejs": "latest",
+        "errorhandler": "latest",
+        "express": "latest",
+        "express-session": "latest",
+        "method-override": "latest",
+        "underscore": "latest",
+        "sanitizer": "latest",
+        "serve-favicon": "latest",
+        "validator": "latest",
+        "xss": "latest",
+        "socket.io": "latest"
+    }
+}
