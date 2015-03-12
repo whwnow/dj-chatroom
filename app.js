@@ -31,7 +31,9 @@ app.use(methodOverride());
 app.use(cookieParser());
 app.use(session({
     name: 'dj',
-    secret: 'dj'
+    secret: 'dj',
+    resave: true,
+    saveUninitialized: true
         // store: new MongoStore({
         //     db: config.db_name
         // }),
@@ -44,7 +46,7 @@ app.get("/", function (req, res) {
 var clients = [];
 var messages = [];
 
-app.get("/login", function (req, res) {
+app.post("/login", function (req, res) {
     if (req.body.name === 'jane' && req.body.password === '1102') {
         return res.send({
             code: 200
@@ -70,13 +72,11 @@ app.post("/message", function (req, res) {
     }
 
     var name = req.body.name;
-
     io.sockets.emit("incomingMessage", {
         message: message,
         name: name
     });
 
-    //Looks good, let the client know
     res.send({
         code: 200
     });
@@ -91,19 +91,26 @@ io.on('connection', function (socket) {
                 name: data.name
             });
             io.sockets.emit("newConnection", {
-                clients: clients
+                clients: clients,
+                name: data.name
             });
+            console.log(clients);
+        } else {
+            socket.disconnect();
         }
     });
 
     socket.on("disconnect", function () {
-        clients = _.without(clients, _.findWhere(clients, {
+        var client = _.findWhere(clients, {
             id: socket.id
-        }));
-        io.sockets.emit("userDisconnected", {
-            id: socket.id,
-            sender: "system"
         });
+
+        io.sockets.emit("userDisconnected", {
+            name: client.name,
+        });
+
+        clients = _.without(clients, client);
+        console.log(clients);
     });
 });
 
