@@ -1,6 +1,12 @@
 var name = '';
 var messageVue = {};
 var onlineVue = {};
+var isAllowed = false;
+if (window.Notification && window.Notification.requestPermission) {
+    window.Notification.requestPermission(function (type) {
+        isAllowed = type === 'granted';
+    });
+}
 
 var bootstrap = function () {
     $('#login').click(function () {
@@ -17,7 +23,7 @@ var bootstrap = function () {
             }
         });
     });
-    $('#password').on('keydown',function (event) {
+    $('#password').on('keydown', function (event) {
         if (event.which == 13) {
             event.preventDefault();
             name = $('#name').val();
@@ -74,6 +80,15 @@ var initChatroom = function () {
             message: data.message,
             mine: data.name === name
         });
+        updateScroll();
+
+        var notification = new Notification(data.name, {
+            icon: '/image/' + (data.name === 'jane' ? 'red' : 'gray') + '40.png',
+            body: data.message
+        });
+        setTimeout(function () {
+            notification.close();
+        }, 3000);
     });
 
     socket.on('disconnect', function () {
@@ -102,7 +117,13 @@ var initChatroom = function () {
 
         }
     });
+
 };
+
+function updateScroll() {
+    var top = $('#chatroom').scrollTop();
+    $('#chatroom').scrollTop(top + 100);
+}
 
 var initVue = function () {
     messageVue = new Vue({
@@ -111,6 +132,10 @@ var initVue = function () {
             name: name,
             messages: []
         }
+    });
+
+    messageVue.$watch('messages', function () {
+        updateScroll();
     });
 
     onlineVue = new Vue({
