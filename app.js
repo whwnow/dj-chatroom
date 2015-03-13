@@ -105,16 +105,17 @@ io.on('connection', function (socket) {
             id: socket.id
         });
 
+        clients = _.without(clients, client);
         io.sockets.emit("userDisconnected", {
             name: client.name,
+            clients: clients
         });
 
-        clients = _.without(clients, client);
         console.log(clients);
     });
 });
 
 
-http.listen(8080, function () {
-    console.log('app listening on port 8080');
+http.listen(3030, function () {
+    console.log('app listening on port 3030');
 });

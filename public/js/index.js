@@ -8,6 +8,24 @@ if (window.Notification && window.Notification.requestPermission) {
     });
 }
 
+function updateScroll() {
+    var top = $('#chatroom').scrollTop();
+    $('#chatroom').scrollTop(top + 100);
+}
+
+function notify(name, msg, needShow) {
+    var notification = new Notification(name, {
+        icon: '/image/' + name + '40x40.png',
+        body: msg
+    });
+
+    if (!needShow) {
+        setTimeout(function () {
+            notification.close();
+        }, 5000);
+    }
+}
+
 var bootstrap = function () {
     $('#login').click(function () {
         name = $('#name').val();
@@ -64,6 +82,9 @@ var initChatroom = function () {
             mine: false
         });
         onlineVue.onlines = data.clients;
+        if (data.name !== name) {
+            notify('admin', data.name + ' 已进入聊天室...', true);
+        }
     });
 
     socket.on('userDisconnected', function (data) {
@@ -72,6 +93,10 @@ var initChatroom = function () {
             message: data.name + '断开连接！',
             mine: false
         });
+        onlineVue.onlines = data.clients;
+        if (data.name !== name) {
+            notify('admin', data.name + ' 已离开聊天室...', true);
+        }
     });
 
     socket.on('incomingMessage', function (data) {
@@ -80,21 +105,13 @@ var initChatroom = function () {
             message: data.message,
             mine: data.name === name
         });
-        updateScroll();
-
-        var notification = new Notification(data.name, {
-            icon: '/image/' + (data.name === 'jane' ? 'red' : 'gray') + '40.png',
-            body: data.message
-        });
-        setTimeout(function () {
-            notification.close();
-        }, 3000);
+        notify(data.name, data.message);
     });
 
     socket.on('disconnect', function () {
         messageVue.messages.push({
             name: 'admin',
-            message: '断开连接！',
+            message: '连接失败！',
             mine: false
         });
     });
@@ -119,11 +136,6 @@ var initChatroom = function () {
     });
 
 };
-
-function updateScroll() {
-    var top = $('#chatroom').scrollTop();
-    $('#chatroom').scrollTop(top + 100);
-}
 
 var initVue = function () {
     messageVue = new Vue({
