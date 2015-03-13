@@ -26,6 +26,10 @@ function notify(name, msg, needShow) {
     }
 }
 
+function getTimeStr() {
+
+}
+
 var bootstrap = function () {
     $('#login').click(function () {
         name = $('#name').val();
@@ -79,7 +83,8 @@ var initChatroom = function () {
         messageVue.messages.push({
             name: 'admin',
             message: '欢迎 ' + data.name + ' 进入...',
-            mine: false
+            mine: false,
+            time: moment().format('h:mm a')
         });
         onlineVue.onlines = data.clients;
         if (data.name !== name) {
@@ -91,7 +96,8 @@ var initChatroom = function () {
         messageVue.messages.push({
             name: 'admin',
             message: data.name + '断开连接！',
-            mine: false
+            mine: false,
+            time: moment().format('h:mm a')
         });
         onlineVue.onlines = data.clients;
         if (data.name !== name) {
@@ -103,16 +109,20 @@ var initChatroom = function () {
         messageVue.messages.push({
             name: data.name,
             message: data.message,
-            mine: data.name === name
+            mine: data.name === name,
+            time: moment().format('h:mm a')
         });
-        notify(data.name, data.message);
+        if (data.name !== name) {
+            notify(data.name, data.message);
+        }
     });
 
     socket.on('disconnect', function () {
         messageVue.messages.push({
             name: 'admin',
             message: '连接失败！',
-            mine: false
+            mine: false,
+            time: moment().format('h:mm a')
         });
     });
 
